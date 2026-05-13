@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our 2 Years ❤️</title>
+    <style>
+        :root {
+            --rose-gold: #ff758c;
+            --deep-red: #ff0040;
+            --dark-bg: #09060b;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--dark-bg);
+            font-family: 'Georgia', serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Экран-заставка (Конверт) */
+        #intro-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #120c17 0%, #09060b 100%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease, visibility 1s;
+        }
+
+        .envelope-btn {
+            background: none;
+            border: 2px dashed var(--rose-gold);
+            padding: 20px 40px;
+            color: #fff;
+            font-size: 1.5rem;
+            font-style: italic;
+            cursor: pointer;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 117, 140, 0.2);
+            transition: all 0.3s ease;
+            animation: floatBtn 2s infinite alternate ease-in-out;
+        }
+
+        .envelope-btn:hover {
+            background: rgba(255, 117, 140, 0.1);
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 117, 140, 0.4);
+        }
+
+        @keyframes floatBtn {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+
+        /* Главный контейнер (скрыт изначально) */
+        .main-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* Волшебный фон с частицами */
+        #canvas-particles {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Центральный блок */
+        .heart-wrapper {
+            position: relative;
+            width: 380px;
+            height: 380px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+
+        /* Объемное бьющееся сердце */
+        .heart-3d {
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            background: linear-gradient(135deg, var(--deep-red) 0%, #b3002d 100%);
+            transform: rotate(-45deg);
+            animation: heartBeat 0.7s infinite alternate cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 3;
+            box-shadow: 
+                -10px 10px 30px rgba(0,0,0,0.5),
+                0 0 60px rgba(255, 0, 64, 0.6),
+                inset 10px -10px 20px rgba(255,255,255,0.2);
+        }
+
+        .heart-3d::before, .heart-3d::after {
+            content: "";
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            background: inherit;
+            border-radius: 50%;
+        }
+        .heart-3d::before { top: -55px; left: 0; box-shadow: inset 5px 5px 15px rgba(255,255,255,0.2); }
+        .heart-3d::after { top: 0; left: 55px; box-shadow: inset -5px -5px 15px rgba(0,0,0,0.3); }
+
+        @keyframes heartBeat {
+            from { transform: rotate(-45deg) scale(0.95); }
+            to { transform: rotate(-45deg) scale(1.1); }
+        }
+
+        /* Вращающийся круговой текст */
+        .rotating-text {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            animation: spin 15s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        text {
+            font-weight: bold;
+            font-size: 16px;
+            fill: var(--rose-gold);
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(255, 117, 140, 0.5);
+        }
+
+        /* Романтичные надписи */
+        .message-box {
+            text-align: center;
+            z-index: 2;
+            margin-top: 20px;
+            color: #fff;
+        }
+
+        .main-title {
+            font-size: 2.8rem;
+            margin: 0;
+            background: linear-gradient(to right, #fff, var(--rose-gold), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(255, 117, 140, 0.3);
+        }
+
+        .date-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Экран входа -->
+    <div id="intro-overlay">
+        <button class="envelope-btn" onclick="startLoveStory()">Тебе открытка. Нажми, чтобы открыть ✉️</button>
+    </div>
+
+    <!-- Задний фон: холст для эффектов -->
+    <canvas id="canvas-particles"></canvas>
+
+    <!-- Основной контент сайта -->
+    <div class="main-container" id="mainContent">
+        <div class="heart-wrapper">
+            <!-- Вращающиеся слова по идеальному кругу -->
+            <svg class="rotating-text" viewBox="0 0 400 400">
+                <defs>
+                    <path id="textCircle" d="M 200, 200 m -140, 0 a 140,140 0 1,1 280,0 a 140,140 0 1,1 -280,0" />
+                </defs>
+                <text>
+                    <textPath href="#textCircle">
+                        2 Years Together • Forever And Always • 2 Years Together • Forever And Always •
+                    </textPath>
+                </text>
+            </svg>
+            <!-- 3D Сердце -->
+            <div class="heart-3d"></div>
+        </div>
+
+        <div class="message-box">
+            <h1 class="main-title">Два года котикам</h1>
+            <div class="date-subtitle">Спасибо за каждый день мурчания </div>
+        </div>
+    </div>
+
+    <!-- Тэг аудио, куда ты можешь положить музыку (инструкция ниже) -->
+    <audio id="bg-music" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Функция активации страницы после клика по конверту
+        function startLoveStory() {
+            document.getElementById('intro-overlay').style.opacity = '0';
+            document.getElementById('intro-overlay').style.visibility = 'hidden';
+            
+            const main = document.getElementById('mainContent');
+            main.style.opacity = '1';
+            main.style.transform = 'scale(1)';
+
+            // Запуск музыки (если файл music.mp3 лежит в репозитории)
+            const audio = document.getElementById('bg-music');
+            audio.play().catch(e => console.log("Музыка не добавлена или заблокирована браузером"));
+
+            initParticles();
+        }
+
+        // Скрипт создания мерцающих звезд и сердечек на фоне (Canvas)
+        function initParticles() {
+            const canvas = document.getElementById('canvas-particles');
+            const ctx = canvas.getContext('2d');
+            
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            const particles = [];
+            for(let i=0; i<60; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2 + 1,
+                    speedY: -(Math.random() * 0.8 + 0.2),
+                    alpha: Math.random() * 0.5 + 0.2,
+                    fade: Math.random() * 0.01 + 0.005
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach(p => {
+                    p.y += p.speedY;
+                    if(p.y < -10) p.y = canvas.height + 10;
+                    
+                    ctx.fillStyle = `rgba(255, 117, 140, ${p.alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
